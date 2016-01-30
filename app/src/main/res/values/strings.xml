@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Bluetooth Application</string>
     <string name="action_settings">Settings</string>
+    <string name="butt_find">Find</string>
+    <string name="butt_toggle_default">Enable</string>
+    <string name="text_paired_devices">Paired devices</string>
+    <string name="text_available_devices">Available devices</string>
 </resources>

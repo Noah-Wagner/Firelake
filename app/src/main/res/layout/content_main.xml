@@ -10,30 +10,45 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="noah.bluetoothapplication.MainActivity"
-    tools:showIn="@layout/activity_main"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_main">
 
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="On"
-        android:onClick="doToggle"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/butt_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="doToggle"
+            android:text="@string/butt_toggle_default" />
+
+        <Button
+            android:id="@+id/butt_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="doFind"
+            android:text="@string/butt_find" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Paired devices"/>
+        android:text="@string/text_paired_devices"/>
 
     <ListView
-        android:id="@+id/list_view"
+        android:id="@+id/list_view_paired"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Available devices"/>
+        android:text="@string/text_available_devices"/>
 
     <ListView
         android:id="@+id/list_view_available"
