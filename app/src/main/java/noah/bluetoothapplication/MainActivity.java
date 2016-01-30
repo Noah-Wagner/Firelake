@@ -3,22 +3,31 @@ package noah.bluetoothapplication;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
 
     BluetoothDevice bluetoothDevice;
+
+    OutputStream ostream;
+    InputStream istream;
 
 
     @Override
@@ -42,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.layout_available_list, R.id.text_row);
         ((ListView)findViewById(R.id.list_view_available)).setAdapter(arrayAdapter);
 
-        ((ListView)findViewById(R.id.list_view_available)).setOnClickListener(new View.OnClickListener() {
+        ((ListView)findViewById(R.id.list_view_available)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 doConnect();
             }
         });
@@ -105,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         if (bluetoothDeviceSet.size() > 0) {
             for (BluetoothDevice device : bluetoothDeviceSet) {
                 list.add(device.getName());
+
             }
             final ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
             ((ListView)findViewById(R.id.list_view_paired)).setAdapter(adapter1);
@@ -126,18 +139,70 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(Objects.equals(device.getName(), "TinyBT-3155")) {
+                    Log.e("It happened!", "*********");
+                    bluetoothDevice = device;
+                }
                 arrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 arrayAdapter.notifyDataSetChanged();
-
             }
         }
     };
 
     private void doConnect() {
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+        try {
+            BluetoothSocket socket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+            socket.connect();
+            ostream = socket.getOutputStream();
+            istream = socket.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void doSend(View view) {
+
+        String text = ((EditText)findViewById(R.id.send_text)).getText().toString();
+        text += "\n";
+        try {
+            ostream.write(text.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final Handler handler = new Handler();
+        final Thread workerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    // stuff here
+
+                    try {
+                        int bytes = istream.available();
+                        if (bytes > 0) {
+                            byte[] readBytes = new byte[bytes];
+                            istream.read(readBytes);
+                        }
+
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+        workerThread.start();
+
 
 
     }
+
 
 
 }
