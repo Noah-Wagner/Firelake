@@ -14,6 +14,17 @@ Girls aged 8 - 14.
 
 loops, arithmetic, if, 
 
+### Tutorial 1
+If statement
+
+### Tutorial 2
+While loop
+
+### Tutorial 3
+For loop
+
+### Tutorial 
+
 
 
 
