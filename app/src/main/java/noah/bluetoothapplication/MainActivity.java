@@ -2,6 +2,7 @@ package noah.bluetoothapplication;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter bluetoothAdapter;
 
+    BluetoothDevice bluetoothDevice;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item);
-        ((ListView)findViewById(R.id.list_view_paired)).setAdapter(arrayAdapter);
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.layout_available_list, R.id.text_row);
+        ((ListView)findViewById(R.id.list_view_available)).setAdapter(arrayAdapter);
+
+        ((ListView)findViewById(R.id.list_view_available)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doConnect();
+            }
+        });
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
@@ -77,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             adapter.disable();
             ((Button)findViewById(R.id.butt_toggle)).setText("Enable");
         }
-
     }
 
 
@@ -100,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
             final ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
             ((ListView)findViewById(R.id.list_view_paired)).setAdapter(adapter1);
 
-        } else {
-            arrayAdapter.clear();
-
-            ibluetoothAdapter.startDiscovery()
-            registerReceiver(broadcastReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-
-
         }
+        arrayAdapter.clear();
+
+        boolean flag = bluetoothAdapter.startDiscovery();
+
+        Log.e("FLAG", String.valueOf(flag));
+
+        registerReceiver(broadcastReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 
     }
 
@@ -115,17 +124,20 @@ public class MainActivity extends AppCompatActivity {
     final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("*****", "*****1");
-            String action = getIntent().getAction();
-
+            String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = getIntent().getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 arrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 arrayAdapter.notifyDataSetChanged();
 
             }
         }
     };
+
+    private void doConnect() {
+
+
+    }
 
 
 }
