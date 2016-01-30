@@ -1,4 +1,4 @@
-package noah.bluetoothapplication;
+package noah.NoMoreUnicorns;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import noah.bluetoothapplication.R;
+
 public class MainActivity extends AppCompatActivity {
 
     final static int  REQUEST_ENABLE_BT = 2;
@@ -38,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
 
     BluetoothDevice bluetoothDevice;
+
+    BluetoothSocket socket;
+
+    volatile boolean stopWorker;
+    byte[] readBuffer;
+    int readBytesIndex;
 
     OutputStream ostream;
     InputStream istream;
@@ -69,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 ((Button)findViewById(R.id.butt_toggle)).setText("Enable");
             }
         }
+
+        Intent intent = new Intent(this, Introduction.class);
+        startActivity(intent);
 
 
 
@@ -117,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         if (bluetoothDeviceSet.size() > 0) {
             for (BluetoothDevice device : bluetoothDeviceSet) {
                 list.add(device.getName());
-
             }
+
             final ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
             ((ListView)findViewById(R.id.list_view_paired)).setAdapter(adapter1);
 
@@ -141,10 +152,7 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(Objects.equals(device.getName(), "TinyBT-3155")) {
-                    Log.e("It happened!", "*********");
-                    bluetoothDevice = device;
-                }
+
                 arrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -154,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     private void doConnect() {
         UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
         try {
-            BluetoothSocket socket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+            socket = bluetoothAdapter.getRemoteDevice("00:06:66:6E:31:77").createRfcommSocketToServiceRecord(uuid);
             socket.connect();
             ostream = socket.getOutputStream();
             istream = socket.getInputStream();
@@ -165,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doSend(View view) {
+        Log.e("Do send", "************");
 
         String text = ((EditText)findViewById(R.id.send_text)).getText().toString();
         text += "\n";
@@ -175,10 +184,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final Handler handler = new Handler();
+        final byte delim = 10;
+        readBytesIndex = 0;
+        stopWorker = false;
+        readBuffer = new byte[1024];
         final Thread workerThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!Thread.currentThread().isInterrupted()) {
+                while (!Thread.currentThread().isInterrupted() && !stopWorker) {
                     // stuff here
 
                     try {
@@ -186,12 +199,35 @@ public class MainActivity extends AppCompatActivity {
                         if (bytes > 0) {
                             byte[] readBytes = new byte[bytes];
                             istream.read(readBytes);
-                        }
 
+
+                            for (int i = 0; i < bytes; ++i) {
+                                byte b = readBytes[i];
+                                if (b == delim) {
+                                    byte[] encodedBytes = new byte[readBytesIndex];
+                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                    final String data = new String(encodedBytes, "US-ASCII");
+                                    readBytesIndex = 0;
+                                    Log.e("wow", data);
+
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //Todo: update thing later
+                                        }
+                                    });
+
+                                } else {
+                                    readBuffer[readBytesIndex++] = b;
+                                }
+
+                            }
+                        }
 
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        stopWorker = true;
                     }
 
                 }
@@ -203,6 +239,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("stop","************");
+        if (istream != null) {
+            try {
+                istream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (ostream != null) {
+            try {
+                ostream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-
+    }
 }

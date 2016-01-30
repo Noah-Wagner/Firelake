@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="noah.NoMoreUnicorns.Tut1"
+    tools:showIn="@layout/activity_tut1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="An if statement allows for a program to do different things, based upon different conditions." />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="An else statement will run when the if condition is not met." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tut1_example_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test code:\n\nif(x == 2) {\n\tprint(\'A\');\n } else { \n \tprint('B');\n}" />
+
+        <Button
+            android:id="@+id/butt_tut1_step"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Step Forward"
+            android:onClick="doStep"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="When x is 2, we will receive A.  When x is not 2, we will receive B." />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tut1_test_code"
+        android:text="Test code:\n\nif(x > 2) {\n\tprint(\'A\');\n } else { \n \tprint('B');\n}" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_tut1"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/butt_tut1_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="doNextTest"
+            android:text="Submit" />
+
+        <TextView
+            android:id="@+id/out_tut1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Output: " />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -3,7 +3,6 @@
     package="noah.bluetoothapplication">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
@@ -13,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="noah.NoMoreUnicorns.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,6 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="noah.NoMoreUnicorns.Introduction"
+            android:label="@string/title_activity_introduction"
+            android:parentActivityName="noah.NoMoreUnicorns.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="noah.NoMoreUnicorns.MainActivity" />
+        </activity>
+        <activity
+            android:name="noah.NoMoreUnicorns.Tut1"
+            android:label="@string/title_activity_tut1"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
