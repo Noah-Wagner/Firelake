@@ -3,6 +3,7 @@ package noah.NoMoreUnicorns;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,7 +97,9 @@ public class Tut1 extends AppCompatActivity {
     }
 
     public void doNextTest(View view) {
+        Log.e("index", String.valueOf(stepIndex[1]));
         switch(stepIndex[1] ++) {
+
             case 0: {
                 testCode.setCurrentLine(-1);
                 textTestCode.setText(testCode.toString());

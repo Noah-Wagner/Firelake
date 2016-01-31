@@ -33,6 +33,10 @@
         <activity
             android:name="noah.NoMoreUnicorns.Tut1"
             android:label="@string/title_activity_tut1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="noah.NoMoreUnicorns.Test"
+            android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

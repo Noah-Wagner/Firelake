@@ -59,7 +59,7 @@ public class Code {
             return false;
         }
 
-        if (currentLine > 0 || index == 1) {
+        if (currentLine > 0 || index == 1 || index == 2) {
             codeLines.set(currentLine, codeLines.get(currentLine).substring(0, codeLines.get(currentLine).length() - 3));
         }
         codeLines.set(index, codeLines.get(index) + " <-");
