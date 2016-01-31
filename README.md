@@ -23,9 +23,13 @@ While loop
 ### Tutorial 3
 For loop
 
-### Tutorial 
+### Tutorial 4
+Function
 
-
+if = 'high', 'low'
+while = 'stop'
+for = '## (0 - 10)'
+function = 'heart', 'flag', 'rainbow', 'smile'
 
 
 #### Tutorial 1
