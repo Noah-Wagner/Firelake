@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Intent intent = new Intent(this, Test.class);
+        Intent intent = new Intent(this, Introduction.class);
         startActivity(intent);
 
 
@@ -169,8 +169,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+
+
 
     public void doSend(View view) {
         Log.e("Do send", "************");
@@ -234,14 +236,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         workerThread.start();
-
-
-
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         Log.e("stop","************");
         if (istream != null) {
             try {
@@ -264,6 +263,5 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 }

@@ -1,5 +1,8 @@
 package noah.NoMoreUnicorns;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,18 +12,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import noah.bluetoothapplication.R;
 
 public class Tut1 extends AppCompatActivity {
 
-    int[] stepIndex;
+    int stepIndex;
     int input;
 
     Code exampleCode;
     Code testCode;
 
-    TextView textExampleCode;
+
     TextView textTestCode;
+
+    OutputStream ostream;
+    InputStream istream;
+    private BluetoothSocket bluetoothSocket;
 
 
     @Override
@@ -30,10 +41,10 @@ public class Tut1 extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        stepIndex = new int[2];
-        //Todo research array init
-        stepIndex[0] = 1;
-        stepIndex[1] = 1;
+        setTitle("Part 1: If statements");
+
+
+
 
         exampleCode = new Code("Example");
         exampleCode.putLine("if (x == 2) {");
@@ -51,54 +62,28 @@ public class Tut1 extends AppCompatActivity {
 
 //        testCode.editLine(testCode.getLine("if (x == 2) {"), "if (x > 2) {");
         testCode.editLine(testCode.getLine("if (x == 2) {"), "if (x > 2) {");
-        textExampleCode = (TextView)findViewById(R.id.tut1_example_code);
+
         textTestCode = (TextView)findViewById(R.id.tut1_test_code);
 
-        textExampleCode.setText(exampleCode.toString());
+
         textTestCode.setText(testCode.toString());
 
-    }
+        bluetoothSocket = ((MyApplication)this.getApplication()).getSocket();
 
-    public void doStep(View view) {
-
-
-
-
-        switch(stepIndex[0]++) {
-            case 0: {
-                ((Button)findViewById(R.id.butt_tut1_step)).setText("Step Forward");
-                exampleCode.setCurrentLine(-1);
-                textExampleCode.setText(exampleCode.toString());
-                break;
+        try {
+            if (bluetoothSocket != null) {
+                ostream = bluetoothSocket.getOutputStream();
+                istream = bluetoothSocket.getInputStream();
             }
-            case 1: {
-                exampleCode.setCurrentLine(exampleCode.getCurrentLine());
-                textExampleCode.setText(exampleCode.toString());
-                break;
-            }
-            case 2:
-            case 3:
-            case 4: {
-                exampleCode.setCurrentLine(exampleCode.getCurrentLine() + 1);
-                textExampleCode.setText(exampleCode.toString());
-                break;
-            }
-            case 5: {
-                exampleCode.setCurrentLine(exampleCode.getCurrentLine()+ 1);
-                textExampleCode.setText(exampleCode.toString());
-                ((Button)findViewById(R.id.butt_tut1_step)).setText("Restart");
-                stepIndex[0] = 0;
-                break;
-            }
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
 
     }
 
     public void doNextTest(View view) {
-        Log.e("index", String.valueOf(stepIndex[1]));
-        switch(stepIndex[1] ++) {
+        Log.e("index", String.valueOf(stepIndex));
+        switch(stepIndex ++) {
 
             case 0: {
                 testCode.setCurrentLine(-1);
@@ -114,7 +99,7 @@ public class Tut1 extends AppCompatActivity {
                 } catch (NumberFormatException nfe) {
                     nfe.printStackTrace();
                     ((Button)findViewById(R.id.butt_tut1_test)).setText("Submit");
-                    stepIndex[1] --;
+                    stepIndex --;
                 }
                 break;
             }
@@ -156,10 +141,57 @@ public class Tut1 extends AppCompatActivity {
                 }
 
                 ((Button)findViewById(R.id.butt_tut1_test)).setText("Restart");
-                stepIndex[1] = 0;
+                stepIndex = 0;
                 break;
             }
 
+        }
+    }
+
+    public void goNext (View view) {
+        Intent intent = new Intent(this, Tut2.class);
+        startActivity(intent);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("stop","************");
+        if (istream != null) {
+            try {
+                istream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (ostream != null) {
+            try {
+                ostream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (bluetoothSocket != null) {
+            try {
+                bluetoothSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+    public void doSend(View view) {
+        Log.e("Do send", "************");
+
+        String text = ((EditText) findViewById(R.id.bt_field1)).getText().toString();
+        text += "\n";
+        try {
+            ostream.write(text.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

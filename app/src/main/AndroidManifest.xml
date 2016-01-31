@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
+        android:name="noah.NoMoreUnicorns.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -37,6 +38,10 @@
         <activity
             android:name="noah.NoMoreUnicorns.Test"
             android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="noah.NoMoreUnicorns.Tut2"
+            android:label="@string/title_activity_tut2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

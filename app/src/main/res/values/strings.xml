@@ -9,4 +9,5 @@
     <string name="string_intro">Welcome to the No More Unicorns program! This app will help you become familiar with computer code as well as make some awesome electronic jewelry!</string>
     <string name="title_activity_tut1">Tut1</string>
     <string name="title_activity_test">Test</string>
+    <string name="title_activity_tut2">Tut2</string>
 </resources>
