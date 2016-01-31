@@ -29,22 +29,39 @@ public class Code {
         return codeLines.get(index);
     }*/
 
+    public int getLine(String line) {
+        for (String string : codeLines) {
+            if (string.equals(line)) {
+                return codeLines.indexOf(string);
+            }
+        }
+        return -1;
+    }
+
+    public void editLine (int index, String string) {
+        if (index >= 0 && index <= codeLines.size() && string != null) {
+            codeLines.set(index, string);
+        }
+    }
+
     public boolean setCurrentLine(int index) {
-        if (index == 0) {
+        /*if (index == 0) {
             index = 1;
+        }*/
+        if (index == -1) {
+            codeLines.set(currentLine,  codeLines.get(currentLine).substring(0, codeLines.get(currentLine).length() - 3));
+            currentLine = 0;
+            return true;
         }
 
         if(codeLines.size() < index) {
 
-            
-
-            if(codeLines.size() < index - 1) {
-
-            }
-
             return false;
         }
-        codeLines.set(index - 1,  codeLines.get(currentLine).substring(0, codeLines.get(currentLine).length() - 3));
+
+        if (currentLine > 0 || index == 1) {
+            codeLines.set(currentLine, codeLines.get(currentLine).substring(0, codeLines.get(currentLine).length() - 3));
+        }
         codeLines.set(index, codeLines.get(index) + " <-");
         currentLine = index;
         return true;

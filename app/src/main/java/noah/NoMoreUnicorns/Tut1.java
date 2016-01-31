@@ -35,8 +35,7 @@ public class Tut1 extends AppCompatActivity {
         stepIndex[1] = 1;
 
         exampleCode = new Code("Example");
-        exampleCode.putLine("if (x == 2)");
-        exampleCode.putLine("{");
+        exampleCode.putLine("if (x == 2) {");
         exampleCode.putLine("print('A');");
         exampleCode.putLine("} else {");
         exampleCode.putLine("print('B');");
@@ -49,6 +48,8 @@ public class Tut1 extends AppCompatActivity {
         }
         testCode.setTitle("Test");
 
+//        testCode.editLine(testCode.getLine("if (x == 2) {"), "if (x > 2) {");
+        testCode.editLine(testCode.getLine("if (x == 2) {"), "if (x > 2) {");
         textExampleCode = (TextView)findViewById(R.id.tut1_example_code);
         textTestCode = (TextView)findViewById(R.id.tut1_test_code);
 
@@ -61,34 +62,29 @@ public class Tut1 extends AppCompatActivity {
 
 
 
+
         switch(stepIndex[0]++) {
             case 0: {
                 ((Button)findViewById(R.id.butt_tut1_step)).setText("Step Forward");
+                exampleCode.setCurrentLine(-1);
+                textExampleCode.setText(exampleCode.toString());
                 break;
             }
             case 1: {
-                exampleCode.setCurrentLine(exampleCode.getCurrentLine()+ 1);
+                exampleCode.setCurrentLine(exampleCode.getCurrentLine());
                 textExampleCode.setText(exampleCode.toString());
-//                ((TextView)findViewById(R.id.tut1_example_code)).setText("Test code:\n\nif(x == 2) { <- \n\tprint(\'A\');\n } else { \n \tprint('B');\n}");
                 break;
             }
-            case 2: {
-                exampleCode.setCurrentLine(exampleCode.getCurrentLine()+ 1);
-                textExampleCode.setText(exampleCode.toString());
-//                ((TextView)findViewById(R.id.tut1_example_code)).setText("Test code:\n\nif(x == 2) { \n\tprint(\'A\'); <- \n } else { \n \tprint('B');\n}");
-
-                break;
-            }
-            case 3: {
+            case 2:
+            case 3:
+            case 4: {
                 exampleCode.setCurrentLine(exampleCode.getCurrentLine() + 1);
                 textExampleCode.setText(exampleCode.toString());
-//                ((TextView)findViewById(R.id.tut1_example_code)).setText("Test code:\n\nif(x == 2) { \n\tprint(\'A\');\n } else { <- \n \tprint('B');\n}");
                 break;
             }
-            case 4: {
+            case 5: {
                 exampleCode.setCurrentLine(exampleCode.getCurrentLine()+ 1);
                 textExampleCode.setText(exampleCode.toString());
-//                ((TextView)findViewById(R.id.tut1_example_code)).setText("Test code:\n\nif(x == 2) { \n\tprint(\'A\');\n } else { \n \tprint('B');\n} <-");
                 ((Button)findViewById(R.id.butt_tut1_step)).setText("Restart");
                 stepIndex[0] = 0;
                 break;
@@ -100,30 +96,35 @@ public class Tut1 extends AppCompatActivity {
     }
 
     public void doNextTest(View view) {
-
-        switch(stepIndex[1]++) {
+        switch(stepIndex[1] ++) {
             case 0: {
-                ((EditText)findViewById(R.id.et_tut1)).setText("");
+                testCode.setCurrentLine(-1);
+                textTestCode.setText(testCode.toString());
+                ((EditText) findViewById(R.id.et_tut1)).setText("");
                 ((Button)findViewById(R.id.butt_tut1_test)).setText("Submit");
-            }
-
-
-            case 1: {
-                input = Integer.valueOf(((EditText)findViewById(R.id.et_tut1)).getText().toString());
-                ((Button)findViewById(R.id.butt_tut1_test)).setText("Step Forward");
                 break;
             }
+            case 1: {
+                ((Button)findViewById(R.id.butt_tut1_test)).setText("Step Forward");
+                try {
+                    input = Integer.valueOf(((EditText) findViewById(R.id.et_tut1)).getText().toString());
+                } catch (NumberFormatException nfe) {
+                    nfe.printStackTrace();
+                    ((Button)findViewById(R.id.butt_tut1_test)).setText("Submit");
+                    stepIndex[1] --;
+                }
+                break;
+            }
+
             case 2: {
-                testCode.setCurrentLine(1);
+                testCode.setCurrentLine(testCode.getCurrentLine());
                 textTestCode.setText(testCode.toString());
-//                ((TextView)findViewById(R.id.tut1_test_code)).setText("Test code:\n\nif(x > 2) { <- \n\tprint(\'A\');\n } else { \n \tprint('B');\n}");
                 break;
             }
             case 3: {
                 if (input > 2) {
                     testCode.setCurrentLine(testCode.getCurrentLine() + 1);
                     textTestCode.setText(testCode.toString());
-//                    ((TextView) findViewById(R.id.tut1_test_code)).setText("Test code:\n\nif(x > 2) { \n\tprint(\'A\'); <- \n } else { \n \tprint('B');\n}");
                     ((TextView)findViewById(R.id.out_tut1)).setText("Output: A");
                 } else {
                     testCode.setCurrentLine(testCode.getCurrentLine() + 2);
@@ -140,10 +141,6 @@ public class Tut1 extends AppCompatActivity {
                     textTestCode.setText(testCode.toString());
                     ((TextView)findViewById(R.id.out_tut1)).setText("Output: B");
                 }
-
-
-
-
                 break;
             }
             case 5: {
